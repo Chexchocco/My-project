@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 public class CharacterMain : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class CharacterMain : MonoBehaviour
     public Rigidbody rb;
     public Animator anim;
 
+
+    public event Action<float, float> OnHealthChanged;
 
 
     private void Awake()
@@ -42,7 +45,7 @@ public class CharacterMain : MonoBehaviour
     public float GetMaxHP() => maxHp;
     
     // 체력 비율 (0.0 ~ 1.0) 반환 - "체력이 30% 이하인가?" 조건 체크할 때 유용합니다.
-    public float GetHPPercentage() => currentHp / maxHp; 
+    public float GetHPPercentage() => maxHp == 0f ? 0f : currentHp / maxHp;
     
     #endregion
 
@@ -63,15 +66,16 @@ public class CharacterMain : MonoBehaviour
     
     public void TakeDamage(float amount)
     {
-        currentHp -= amount;
-        
-        // 여기에 피격 애니메이션이나 파티클 호출 로직 추가 가능
-        
-        if (currentHp <= 0)
-        {
-            currentHp = 0;
+        if (amount <= 0f || currentHp <= 0f)
+            return;
+
+        currentHp = Mathf.Max(0f, currentHp - amount);
+
+        // HP가 변경되었음을 외부에 알림
+        OnHealthChanged?.Invoke(currentHp, maxHp);
+
+        if (currentHp <= 0f)
             Die();
-        }
     }
 
     private void Die()

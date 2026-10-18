@@ -9,7 +9,6 @@ public class DistanceCondition : AICondition
     protected override bool CheckCondition(CharacterMain owner, CharacterMain target,  AIConditionConfig conditionConfig)
     {
         
-        Debug.Log("거리 조건 탐색 시작");
         if (target == null) return false;
         float distance = Vector3.Distance(owner.transform.position, target.transform.position);
         
@@ -20,21 +19,17 @@ public class DistanceCondition : AICondition
         switch (conditionConfig.compareType)
         {
             case CompareType.Less:
-                Debug.Log("less");
                 return distance < compareDistance;
 
             case CompareType.LessOrEqual:
-                Debug.Log("less or equal");
                 return distance <= compareDistance;
 
             case CompareType.Greater:
             
-                Debug.Log("Greater");
                 return distance > compareDistance;
 
             case CompareType.GreaterOrEqual:
             
-                Debug.Log("Greater or equal");
                 return distance >= compareDistance;
         }
         Debug.Log("거리 조건 오류");
